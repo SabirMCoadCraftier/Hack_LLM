@@ -51,6 +51,16 @@ async def generic_exception_handler(request: Request, exc: Exception):
         content={"detail": "Internal server error occurred."}
     )
 
+@app.get("/", include_in_schema=False)
+async def root():
+    """Root endpoint welcoming visitors and directing to /health and /optimize-energy."""
+    return {
+        "service": settings.APP_NAME,
+        "status": "online",
+        "health_check": "/health",
+        "primary_endpoint": "POST /optimize-energy"
+    }
+
 @app.get("/health", response_model=HealthResponse, status_code=status.HTTP_200_OK)
 async def health_check():
     """Readiness probe endpoint for judging harness."""
